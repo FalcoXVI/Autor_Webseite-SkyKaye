@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Sky Kaye — Content Manager</title>
+<link rel="stylesheet" href="../assets/css/industry.css">
+<style>
+  html, body { margin: 0; min-height: 100%; }
+  #setup {
+    min-height: 100vh; display: grid; place-items: center; padding: 60px 28px;
+    background: var(--color-accent-900, #10202c); color: #f2f2f3;
+    font-family: var(--font-body, system-ui, sans-serif);
+  }
+  #setup .sheet { width: min(720px, 100%); display: flex; flex-direction: column; gap: 30px; }
+  #setup .head { display: flex; align-items: center; gap: 16px; }
+  #setup .head img { width: 46px; height: 46px; border-radius: 50%; mix-blend-mode: screen; }
+  #setup .head span {
+    font-family: var(--font-heading, sans-serif); font-weight: 600;
+    font-size: 15px; letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  #setup h1 {
+    margin: 0; font-family: var(--font-heading, sans-serif); font-weight: 600;
+    font-size: clamp(34px, 6vw, 62px); line-height: 0.94; letter-spacing: 0.01em; text-transform: uppercase;
+  }
+  #setup .lede { margin: 0; max-width: 58ch; font-size: 16px; line-height: 1.75; color: rgba(242,242,243,0.72); }
+  #setup ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+  #setup li {
+    display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 20px;
+    padding: 20px 0; border-top: 1px solid rgba(242,242,243,0.18);
+  }
+  #setup li:last-child { border-bottom: 1px solid rgba(242,242,243,0.18); }
+  #setup li b {
+    font-family: var(--font-heading, sans-serif); font-weight: 600; font-size: 17px;
+    letter-spacing: 0.06em; color: #8fb7d4;
+  }
+  #setup li p { margin: 0; font-size: 15px; line-height: 1.7; color: rgba(242,242,243,0.78); }
+  #setup code {
+    font-family: ui-monospace, Menlo, monospace; font-size: 13.5px;
+    color: #8fb7d4; background: rgba(242,242,243,0.07); padding: 1px 6px;
+  }
+  #setup .foot { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; }
+  #setup a {
+    font-family: var(--font-heading, sans-serif); font-weight: 600; font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase; color: rgba(242,242,243,0.7);
+    text-decoration: none; border-bottom: 1px solid rgba(242,242,243,0.3); padding-bottom: 3px;
+  }
+  #setup a:hover { color: #8fb7d4; border-color: #8fb7d4; }
+  #setup[hidden] { display: none; }
+</style>
+</head>
+<body>
+
+<div id="setup" hidden>
+  <div class="sheet">
+    <div class="head">
+      <img src="../assets/img/sky-kaye-logo.jpeg" alt="">
+      <span>Sky Kaye</span>
+    </div>
+    <h1>Content Manager</h1>
+    <p class="lede" id="setup-lede">The editor is installed and configured for an email login — it just needs to be deployed. Three steps and the author can publish on their own, without a GitHub account.</p>
+    <ol>
+      <li>
+        <b>01</b>
+        <p>Put the site in a GitHub repository and connect that repository to a Netlify site. Nothing to configure here — the editor is already set to <code>git-gateway</code>.</p>
+      </li>
+      <li>
+        <b>02</b>
+        <p>In the Netlify dashboard enable <b>Identity</b>, set registration to <b>invite only</b>, then enable <b>Identity → Services → Git Gateway</b>. Invite the author by email; he sets his own password from the invitation link.</p>
+      </li>
+      <li>
+        <b>03</b>
+        <p>He then opens <code>/admin</code>, logs in with his email, and gets the list of posts — write a new one, edit or delete an old one, press Publish. To try it beforehand: run <code>npx decap-server</code> and open this page from <code>localhost</code>.</p>
+      </li>
+    </ol>
+    <div class="foot">
+      <a href="../updates.html">View the updates page</a>
+      <a href="../index.html">Back to the site</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+//  EINSTELLUNGEN — hier trägt man das Repository ein.
+// ─────────────────────────────────────────────────────────────────────────────
+window.CMS_MANUAL_INIT = true;
+
+var CMS_CONFIG = {
+  backend: {
+    name: "git-gateway",         // Netlify Identity: Login per E-Mail, kein GitHub-Konto nötig
+    branch: "main"               // ggf. auf "master" ändern
+  },
+  local_backend: true,           // npx decap-server → Login entfällt beim lokalen Testen
+  media_folder: "uploads",
+  public_folder: "/uploads",
+  publish_mode: "simple",
+  logo_url: "../assets/img/sky-kaye-logo.jpeg",
+  site_url: "/",
+  display_url: "/",
+  collections: [
+    {
+      name: "updates",
+      label: "Updates",
+      files: [
+        {
+          name: "posts",
+          label: "Update-Feed",
+          file: "src/updates/posts.json",
+          description: "Datum, Titel, Text — mehr braucht ein Post nicht. Sortiert wird automatisch.",
+          fields: [
+            {
+              name: "posts",
+              label: "Posts",
+              label_singular: "Post",
+              widget: "list",
+              summary: "{{fields.date}} — {{fields.title}}",
+              fields: [
+                { name: "date", label: "Datum", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, picker_utc: true },
+                { name: "title", label: "Titel", widget: "string", required: false, hint: "Optional. Ohne Titel erscheint nur Datum und Text." },
+                { name: "body", label: "Text", widget: "text", hint: "Leerzeile = neuer Absatz." }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+</script>
+
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="https://unpkg.com/decap-cms@^3.3.3/dist/decap-cms.js"></script>
+<script>
+(function () {
+  var setup = document.getElementById('setup');
+  var lede = document.getElementById('setup-lede');
+
+  function showSetup(message) {
+    if (message) lede.textContent = message;
+    setup.hidden = false;
+  }
+
+  if (!window.CMS) {
+    showSetup('The editor bundle could not be loaded — check the internet connection and reload this page.');
+    return;
+  }
+
+  var host = window.location.hostname;
+  var isLocal = host === 'localhost' || host === '127.0.0.1';
+  var gateway = CMS_CONFIG.backend.name === 'git-gateway';
+  var repo = CMS_CONFIG.backend.repo || '';
+  var repoSet = repo && !/DEIN-GITHUB-USER|DEIN-REPO/i.test(repo);
+
+  function start() { window.CMS.init({ config: CMS_CONFIG }); }
+
+  if (isLocal) { start(); return; }
+
+  if (gateway) {
+    // Der Widget-Script lädt überall — das sagt nichts. Erst diese Antwort beweist,
+    // dass die Site wirklich auf Netlify liegt und Identity aktiviert ist.
+    var timer = setTimeout(function () { showSetup(); }, 6000);
+    fetch('/.netlify/identity/settings', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function () { clearTimeout(timer); start(); })
+      .catch(function () { clearTimeout(timer); showSetup(); });
+    return;
+  }
+
+  if (!repoSet) { showSetup(); return; }
+  start();
+})();
+</script>
+
+</body>
+</html>
