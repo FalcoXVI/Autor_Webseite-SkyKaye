@@ -1,21 +1,3 @@
 {
-  "posts": [
-    {
-      "date": "2026-09-02",
-      "title": "Test2",
-      "body": "Test2",
-      "tag": "UWU"
-    },
-    {
-      "date": "2026-09-03",
-      "title": "Test23",
-      "body": "Test23"
-    },
-    {
-      "date": "2026-09-04",
-      "title": "Test37",
-      "body": "Test37",
-      "tag": "37"
-    }
-  ]
+  "posts": []
 }
