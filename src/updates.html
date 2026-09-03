@@ -52,8 +52,8 @@ a:hover { color: var(--color-accent-800); }
 
 <section style="padding:0 40px 130px">
   <div style="width:min(920px,100%);margin:0 auto;display:flex;flex-direction:column">
+    <div id="feed" style="display:flex;flex-direction:column">
 
-    
     <article class="blueprint" style="padding:34px;margin-bottom:44px;background:color-mix(in srgb, var(--color-accent) 6%, transparent)">
       <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
       <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:20px">
@@ -63,6 +63,8 @@ a:hover { color: var(--color-accent-800); }
       <h2 style="margin:0 0 14px;font-size:clamp(24px,2.6vw,34px);line-height:1.05;text-transform:uppercase">No updates yet</h2>
       <p style="margin:0;font-size:17px;line-height:1.7;text-wrap:pretty">Nothing posted so far — the first update will appear here.</p>
     </article>
+
+    </div>
 
     <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start;margin-top:54px;padding:26px 0;border-top:1px solid var(--color-divider)">
       <a class="btn btn-secondary" href="index.html#updates" style="padding:14px 24px;font-size:12px;letter-spacing:0.16em;text-transform:uppercase">&larr; Back to the homepage</a>
@@ -97,6 +99,63 @@ a:hover { color: var(--color-accent-800); }
     n.classList.add('pre');
     io.observe(n);
   });
+})();
+</script>
+<script>
+/* Holt neue Posts aus updates/posts.json nach. Schlägt der Abruf fehl, bleibt der
+   vorgerenderte Inhalt stehen — die Seite ist ohne dieses Script vollständig. */
+(function () {
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmt(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return String(iso || '');
+    return ('0' + d.getUTCDate()).slice(-2) + ' ' + MON[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
+  }
+  fetch('updates/posts.json', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function (d) {
+      var posts = (d && d.posts || []).filter(function (p) { return p && (p.body || p.title); });
+      if (!posts.length) return;
+      posts.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
+      posts = posts.map(function (p) {
+        return {
+          dateLabel: fmt(p.date),
+          title: p.title || '',
+          body: (p.body || '').trim(),
+          teaser: (p.title || (p.body || '').trim().split('\n')[0] || '').slice(0, 74)
+        };
+      });
+      render(posts);
+    })
+    .catch(function () {});
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  function render(posts) {
+    var feed = document.getElementById('feed');
+    if (!feed) return;
+    var top = posts[0];
+    var html = '<article class="blueprint" style="padding:34px;margin-bottom:44px;background:color-mix(in srgb, var(--color-accent) 6%, transparent)">' +
+      '<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>' +
+      '<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:20px">' +
+      '<span class="tag tag-accent" style="letter-spacing:0.16em;text-transform:uppercase">Latest update</span>' +
+      '<span style="font-family:var(--font-heading);font-weight:600;font-size:15px;letter-spacing:0.12em;text-transform:uppercase">Sky Kaye</span>' +
+      '<span style="margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">' + esc(top.dateLabel) + '</span>' +
+      '</div>' +
+      (top.title ? '<h2 style="margin:0 0 14px;font-size:clamp(24px,2.6vw,34px);line-height:1.05;text-transform:uppercase">' + esc(top.title) + '</h2>' : '') +
+      '<p style="margin:0;font-size:17px;line-height:1.7;white-space:pre-line;text-wrap:pretty">' + esc(top.body) + '</p></article>';
+    for (var i = 1; i < posts.length; i++) {
+      var p = posts[i];
+      html += '<article style="display:grid;grid-template-columns:130px minmax(0,1fr);gap:34px;padding:34px 0;border-top:1px solid var(--color-divider)">' +
+        '<div style="display:flex;flex-direction:column;gap:6px">' +
+        '<span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--color-accent-700)">' + esc(p.dateLabel) + '</span>' +
+        '<span style="font-family:var(--font-heading);font-weight:600;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Sky Kaye</span>' +
+        '</div><div style="display:flex;flex-direction:column;gap:12px">' +
+        (p.title ? '<h2 style="margin:0;font-family:var(--font-heading);font-weight:600;font-size:clamp(20px,2.2vw,27px);line-height:1.1;text-transform:uppercase">' + esc(p.title) + '</h2>' : '') +
+        '<p style="margin:0;font-size:16px;line-height:1.75;white-space:pre-line;text-wrap:pretty">' + esc(p.body) + '</p>' +
+        '</div></article>';
+    }
+    feed.innerHTML = html;
+  }
 })();
 </script>
 </body>
