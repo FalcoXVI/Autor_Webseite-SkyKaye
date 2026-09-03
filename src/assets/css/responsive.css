@@ -1,0 +1,51 @@
+/* Mobile layer — purely additive on top of industry.css and the inline
+   component styles. Nothing here changes anything above the breakpoint, so
+   desktop stays pixel-identical. Overrides use !important only where they
+   need to beat an inline style of the same property. */
+
+@media (max-width: 720px) {
+
+  /* Any inline CSS grid (hero splits, book/character cards, definition
+     lists, ...) collapses to one stacked column instead of overflowing or
+     squeezing a fixed-width track into a phone screen. */
+  [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: 22px !important;
+  }
+
+  /* Sections and footers use a flat 40px side gutter on desktop — too much
+     of a 360-400px viewport. */
+  section, footer {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  /* The fixed site header: let the nav drop to its own row instead of
+     overflowing or wrapping mid-link. Scoped to the fixed nav header only
+     (not the in-article <header> on the reading-sample page). */
+  header[style*="position:fixed"] {
+    padding: 12px 16px !important;
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+  header[style*="position:fixed"] nav {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px 18px !important;
+    font-size: 11px !important;
+  }
+
+  /* With the header now potentially two rows tall, anchor-scrolled sections
+     need a bit more clearance so their heading doesn't land under it. */
+  [style*="scroll-margin-top:70px"] {
+    scroll-margin-top: 112px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  header[style*="position:fixed"] nav {
+    gap: 6px 14px !important;
+    font-size: 10px !important;
+  }
+}
