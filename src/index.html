@@ -184,7 +184,7 @@ a:hover { color: var(--color-accent-800); }
       <article class="blueprint" style="position:relative;background:var(--color-bg);padding:34px 34px 30px">
         <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
         <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:20px">
-          <span class="tag tag-neutral" style="letter-spacing:0.16em;text-transform:uppercase">Coming soon</span>
+          <span data-latest="tag" class="tag tag-neutral" style="letter-spacing:0.16em;text-transform:uppercase">Coming soon</span>
           <span style="font-family:var(--font-heading);font-weight:600;font-size:15px;letter-spacing:0.12em;text-transform:uppercase">Sky Kaye</span>
           <span data-latest="date" style="margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)"></span>
         </div>
@@ -262,6 +262,7 @@ a:hover { color: var(--color-accent-800); }
       posts = posts.map(function (p) {
         return {
           dateLabel: fmt(p.date),
+          tag: (p.tag || '').trim(),
           title: p.title || '',
           body: (p.body || '').trim(),
           teaser: (p.title || (p.body || '').trim().split('\n')[0] || '').slice(0, 74)
@@ -281,6 +282,12 @@ a:hover { color: var(--color-accent-800); }
       set('[data-latest="date"]', top.dateLabel);
       set('[data-latest="title"]', top.title);
       set('[data-latest="body"]', top.body);
+      var tagEl = document.querySelector('[data-latest="tag"]');
+      if (tagEl) {
+        tagEl.textContent = top.tag || 'Latest update';
+        tagEl.classList.remove('tag-neutral');
+        tagEl.classList.add('tag-accent');
+      }
     }
     if (peek) {
       set('[data-peek="date"]', peek.dateLabel);

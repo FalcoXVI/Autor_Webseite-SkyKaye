@@ -122,6 +122,7 @@ var CMS_CONFIG = {
               summary: "{{fields.date}} — {{fields.title}}",
               fields: [
                 { name: "date", label: "Datum", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, picker_utc: true },
+                { name: "tag", label: "Badge", widget: "string", required: false, hint: "Nur beim neuesten Post sichtbar — kleines Label über der Überschrift, z. B. 'Neuigkeit' oder 'Meilenstein'. Leer lassen für 'Latest update'." },
                 { name: "title", label: "Titel", widget: "string", required: false, hint: "Optional. Ohne Titel erscheint nur Datum und Text." },
                 { name: "body", label: "Text", widget: "text", hint: "Leerzeile = neuer Absatz." }
               ]

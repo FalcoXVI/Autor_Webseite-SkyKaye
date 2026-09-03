@@ -120,6 +120,7 @@ a:hover { color: var(--color-accent-800); }
       posts = posts.map(function (p) {
         return {
           dateLabel: fmt(p.date),
+          tag: (p.tag || '').trim(),
           title: p.title || '',
           body: (p.body || '').trim(),
           teaser: (p.title || (p.body || '').trim().split('\n')[0] || '').slice(0, 74)
@@ -137,7 +138,7 @@ a:hover { color: var(--color-accent-800); }
     var html = '<article class="blueprint" style="padding:34px;margin-bottom:44px;background:color-mix(in srgb, var(--color-accent) 6%, transparent)">' +
       '<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>' +
       '<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:20px">' +
-      '<span class="tag tag-accent" style="letter-spacing:0.16em;text-transform:uppercase">Latest update</span>' +
+      '<span class="tag tag-accent" style="letter-spacing:0.16em;text-transform:uppercase">' + esc(top.tag || 'Latest update') + '</span>' +
       '<span style="font-family:var(--font-heading);font-weight:600;font-size:15px;letter-spacing:0.12em;text-transform:uppercase">Sky Kaye</span>' +
       '<span style="margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">' + esc(top.dateLabel) + '</span>' +
       '</div>' +

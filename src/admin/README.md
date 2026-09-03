@@ -11,7 +11,7 @@ Homepage lesen daraus. Ein neuer Post erscheint also automatisch an beiden Stell
 3. **Updates → Update-Feed** öffnen — dort steht die Liste aller Posts
 4. **Add Post** für einen neuen; auf einen bestehenden klicken zum Ändern;
    Mülleimer-Symbol zum Löschen
-5. Datum, Titel (optional) und Text eintippen — Leerzeile = neuer Absatz
+5. Datum, Badge (optional), Titel (optional) und Text eintippen — Leerzeile = neuer Absatz
 6. **Publish** drücken
 
 Der Rest passiert unsichtbar: Netlify schreibt die Änderung ins Repository und baut die
@@ -40,17 +40,20 @@ keine Entwicklerin nötig.
 ```json
 {
   "posts": [
-    { "date": "2026-08-09", "title": "Out in the trenches", "body": "Erster Absatz.\n\nZweiter Absatz." }
+    { "date": "2026-08-09", "tag": "Meilenstein", "title": "Out in the trenches", "body": "Erster Absatz.\n\nZweiter Absatz." }
   ]
 }
 ```
 
 Sortiert wird automatisch nach Datum, neuester Post zuerst — die Reihenfolge in der
-Datei ist also egal. Der neueste Post erscheint als große „Latest update"-Karte,
-alle weiteren als Zeitleiste darunter.
+Datei ist also egal. Der neueste Post erscheint als große Karte, alle weiteren als
+Zeitleiste darunter. Nur bei diesem neuesten Post ist das kleine Badge über der
+Überschrift sichtbar (`tag`) — bleibt es leer, steht dort automatisch „Latest update".
+Bei allen älteren Posts wird das Feld nicht angezeigt, auch wenn man es ausfüllt.
 
 ## Fallback
 
-Lädt `src/updates/posts.json` nicht (z. B. beim Öffnen direkt vom Dateisystem), zeigen beide
-Seiten drei fest hinterlegte Beispiel-Posts, damit nie eine leere Fläche entsteht.
-Sobald die Datei erreichbar ist, gewinnt sie.
+Lädt `src/updates/posts.json` nicht (z. B. beim Öffnen direkt vom Dateisystem) oder sind
+noch keine Posts vorhanden, zeigen beide Seiten einen fest hinterlegten „No updates yet"-
+Zustand, damit nie eine leere Fläche entsteht. Sobald echte Posts erreichbar sind, gewinnen
+sie.
