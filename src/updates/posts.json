@@ -1,3 +1,9 @@
 {
-  "posts": []
+  "posts": [
+    {
+      "date": "2026-09-03",
+      "title": "Test",
+      "body": "Test"
+    }
+  ]
 }
