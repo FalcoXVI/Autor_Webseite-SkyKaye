@@ -11,7 +11,9 @@ Homepage lesen daraus. Ein neuer Post erscheint also automatisch an beiden Stell
 3. **Updates → Update-Feed** öffnen — dort steht die Liste aller Posts
 4. **Add Post** für einen neuen; auf einen bestehenden klicken zum Ändern;
    Mülleimer-Symbol zum Löschen
-5. Datum, Badge (optional), Titel (optional) und Text eintippen — Leerzeile = neuer Absatz
+5. Datum & Uhrzeit, Badge (optional), Titel (optional) und Text eintippen — Leerzeile =
+   neuer Absatz. Datum darf auch in der Vergangenheit oder Zukunft liegen — Posts reihen
+   sich automatisch chronologisch ein (bis auf die Minute genau).
 6. **Publish** drücken
 
 Der Rest passiert unsichtbar: Netlify schreibt die Änderung ins Repository und baut die
@@ -40,16 +42,25 @@ keine Entwicklerin nötig.
 ```json
 {
   "posts": [
-    { "date": "2026-08-09", "tag": "Meilenstein", "title": "Out in the trenches", "body": "Erster Absatz.\n\nZweiter Absatz." }
+    { "date": "2026-08-09T14:30:00+02:00", "tag": "Meilenstein", "title": "Out in the trenches", "body": "Erster Absatz.\n\nZweiter Absatz." }
   ]
 }
 ```
 
-Sortiert wird automatisch nach Datum, neuester Post zuerst — die Reihenfolge in der
-Datei ist also egal. Der neueste Post erscheint als große Karte, alle weiteren als
-Zeitleiste darunter. Nur bei diesem neuesten Post ist das kleine Badge über der
-Überschrift sichtbar (`tag`) — bleibt es leer, steht dort automatisch „Latest update".
-Bei allen älteren Posts wird das Feld nicht angezeigt, auch wenn man es ausfüllt.
+Sortiert wird automatisch nach Datum **und Uhrzeit**, neuester Post zuerst — die
+Reihenfolge in der Datei ist also egal, und ein Post kann bewusst mit einem Datum in
+der Vergangenheit oder Zukunft angelegt werden, um ihn an der richtigen Stelle
+einzureihen. Der neueste Post erscheint als große Karte, alle weiteren als Zeitleiste
+darunter. Nur bei diesem neuesten Post ist das kleine Badge über der Überschrift
+sichtbar (`tag`) — bleibt es leer, steht dort automatisch „Latest update". Bei allen
+älteren Posts wird das Feld nicht angezeigt, auch wenn man es ausfüllt.
+
+**Zeitzone:** `date` wird als vollständiger Zeitstempel mit Offset gespeichert (siehe
+Beispiel oben). Beim Eintippen im Formular zeigt der Picker deine lokale Browser-Zeit —
+solange dein Rechner auf Wiener Zeit eingestellt ist (Normalfall), musst du dir um
+Sommer-/Winterzeit keine Gedanken machen. Auf der Website wird der Zeitstempel für
+**jede Besucherin überall auf der Welt** immer als Wiener Ortszeit angezeigt (MEZ/MESZ
+automatisch berücksichtigt) — nicht als lokale Zeit der Besucherin.
 
 ## Fallback
 

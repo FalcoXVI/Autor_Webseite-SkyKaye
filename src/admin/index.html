@@ -121,7 +121,7 @@ var CMS_CONFIG = {
               widget: "list",
               summary: "{{fields.date}} — {{fields.title}}",
               fields: [
-                { name: "date", label: "Datum", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, picker_utc: true },
+                { name: "date", label: "Datum & Uhrzeit", widget: "datetime", format: "YYYY-MM-DDTHH:mm:ssZ", picker_utc: false, hint: "Auch Vergangenheit oder Zukunft möglich — Posts reihen sich automatisch chronologisch ein. Eingabe in deiner lokalen Zeit (Wien); auf der Seite wird immer Wiener Zeit angezeigt, Sommer-/Winterzeit automatisch berücksichtigt." },
                 { name: "tag", label: "Badge", widget: "string", required: false, hint: "Nur beim neuesten Post sichtbar — kleines Label über der Überschrift, z. B. 'Neuigkeit' oder 'Meilenstein'. Leer lassen für 'Latest update'." },
                 { name: "title", label: "Titel", widget: "string", required: false, hint: "Optional. Ohne Titel erscheint nur Datum und Text." },
                 { name: "body", label: "Text", widget: "text", hint: "Leerzeile = neuer Absatz." }

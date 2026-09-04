@@ -106,17 +106,22 @@ a:hover { color: var(--color-accent-800); }
    vorgerenderte Inhalt stehen — die Seite ist ohne dieses Script vollständig. */
 (function () {
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  /* Zeigt jeden Zeitstempel immer in Wiener Ortszeit (MEZ/MESZ, automatisch per
+     Intl-Zeitzonendatenbank), unabhängig davon, wo die Besucherin gerade ist. */
   function fmt(iso) {
     var d = new Date(iso);
     if (isNaN(d)) return String(iso || '');
-    return ('0' + d.getUTCDate()).slice(-2) + ' ' + MON[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
+    var parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Vienna', day: '2-digit', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
+    }).formatToParts(d).reduce(function (acc, p) { acc[p.type] = p.value; return acc; }, {});
+    return parts.day + ' ' + MON[parseInt(parts.month, 10) - 1] + ' ' + parts.year + ', ' + parts.hour + ':' + parts.minute;
   }
   fetch('updates/posts.json', { cache: 'no-store' })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
     .then(function (d) {
       var posts = (d && d.posts || []).filter(function (p) { return p && (p.body || p.title); });
       if (!posts.length) return;
-      posts.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
+      posts.sort(function (a, b) { return new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime(); });
       posts = posts.map(function (p) {
         return {
           dateLabel: fmt(p.date),

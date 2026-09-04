@@ -20,6 +20,7 @@ src/
     README.md             Anleitung: Updates pflegen
   updates/
     posts.json            die Updates selbst
+  _headers                 Cache-Control für Netlify (siehe unten)
   assets/
     css/industry.css      Stylesheet
     js/support.js         (aktuell ungenutzt — Rest eines Design-Tool-Exports, siehe unten)
@@ -76,6 +77,15 @@ Einladung, Passwort-Reset oder E-Mail-Bestätigung landen technisch bedingt auf 
 Startseite (`#invite_token=…` usw. im URL-Hash) und werden von dort automatisch nach
 `/admin/` weitergeleitet, wo das eigentliche Login-Fenster sitzt. Ohne dieses Script
 würde ein Einladungslink auf der Startseite landen, ohne dass sich etwas tut.
+
+## Caching (`_headers`)
+
+Netlify cached HTML/CSS/JS teils so aggressiv, dass ein normales Neuladen der Seite
+alte Inhalte zeigte und nur ein neuer Tab wirklich frische Inhalte brachte.
+`src/_headers` schickt jetzt `Cache-Control: no-cache` für alle Dateien mit — der
+Browser fragt dadurch bei jedem Laden beim Server nach, ob sich etwas geändert hat,
+statt blind eine alte Kopie zu verwenden. Auf Ladezeit hat das praktisch keinen
+Einfluss, da unveränderte Dateien weiterhin effizient per 304-Antwort bestätigt werden.
 
 ## Bilder
 
