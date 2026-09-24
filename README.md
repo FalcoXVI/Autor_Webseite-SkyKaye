@@ -13,16 +13,27 @@ src/
   id-hate-to-love-you.html  I'd Hate To Love You
   know-my-name.html       Know My Name
   updates.html            Update-Feed
+  behind-the-pages.html   Behind The Pages — Übersichtstabelle aller Einträge
+  behind-the-pages-article.html  Behind The Pages — Seite eines Eintrags (?id=…)
   legal-notice.html       Impressum
   privacy-policy.html     Datenschutzerklärung
-  admin/                  Redaktionsoberfläche für die Updates
-    index.html
-    README.md             Anleitung: Updates pflegen
+  admin/                  Redaktionsoberfläche (Updates, Behind The Pages)
+    index.html            Decap-Konfiguration
+    stable-id-widget.js   Widget, das jedem Behind-The-Pages-Eintrag eine feste Link-Kennung gibt
+    README.md             Anleitung: Inhalte pflegen
   updates/
     posts.json            die Updates selbst
+  behind-the-pages/
+    articles.json         die Behind-The-Pages-Einträge
   _headers                 Cache-Control für Netlify (siehe unten)
   assets/
-    css/industry.css      Stylesheet
+    css/industry.css      Stylesheet (Design-Tokens, Komponenten)
+    css/responsive.css    Mobile-Anpassungen
+    css/rich-text.css     Darstellung des formatierten Texts aus dem Editor
+    css/behind-the-pages.css  Liste auf der Startseite, Übersichtstabelle
+    js/content-feed.js    gemeinsam: JSON laden, nach Datum sortieren, Datum in Wiener Zeit
+    js/rich-text.js       gemeinsam: Markdown → sicheres HTML (marked + DOMPurify)
+    js/behind-the-pages.js  Behind The Pages: Laden, feste URLs, Reading Time
     js/support.js         (aktuell ungenutzt — Rest eines Design-Tool-Exports, siehe unten)
     img/                  Logo & Cover
 ```
@@ -65,10 +76,29 @@ und `updates.html` — deshalb sieht Google ihn und die Seite funktioniert auch 
 JavaScript. Zusätzlich holt ein kleines Script beim Öffnen `updates/posts.json` nach und
 ersetzt den Feed, falls dort etwas steht.
 
+Dasselbe Prinzip gilt für **Behind The Pages** (`behind-the-pages/articles.json`): Die
+Startseite zeigt die drei neuesten Einträge (bei mehr als drei mit „See all“), die
+Übersicht alle, und jeder Eintrag hat eine eigene, teilbare Seite
+`behind-the-pages-article.html?id=<kennung>-<titel>`. Nur die Kennung vor dem ersten `-`
+zählt; der Titel dahinter ist Kosmetik, damit Links auch nach einer Titeländerung
+funktionieren.
+
 Praktisch heißt das: Postet der Autor über `/admin`, erscheint sein Beitrag **sofort**
 auf beiden Seiten, ohne dass jemand die Seiten neu bauen muss. Nur Suchmaschinen sehen
 den neuen Text erst, wenn die Seiten das nächste Mal frisch erzeugt werden. Für
 Sichtbarkeit reicht das; die tragenden Inhalte der Seite ändern sich ohnehin selten.
+
+## Formatierter Text
+
+Texte werden im Admin mit einem Markdown-Editor mit Formatierungsleiste geschrieben (fett,
+kursiv, Link, Überschriften, Zitat, Listen) und als Markdown gespeichert.
+`assets/js/rich-text.js` wandelt das im Browser mit `marked` in HTML um und reinigt es
+mit `DOMPurify` (nur eine feste Liste harmloser Tags bleibt übrig). Beide Bibliotheken
+kommen versioniert vom CDN (jsDelivr) — ein Build-Schritt bleibt unnötig. Fällt das CDN
+aus, erscheint der Text unformatiert, aber vollständig.
+
+Alte Posts aus reinem Text brauchen keine Migration: Leerzeile = neuer Absatz, einfacher
+Zeilenumbruch bleibt ein Zeilenumbruch — sie sehen pixelgenau aus wie vorher.
 
 ## Konten & Login (Netlify Identity)
 

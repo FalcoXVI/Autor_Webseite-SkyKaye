@@ -11,6 +11,8 @@
 <meta property="og:image" content="assets/img/sky-kaye-logo.jpeg">
 <link rel="stylesheet" href="assets/css/industry.css">
 <link rel="stylesheet" href="assets/css/responsive.css">
+<link rel="stylesheet" href="assets/css/rich-text.css">
+<link rel="stylesheet" href="assets/css/behind-the-pages.css">
 <style>
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--color-bg); color: var(--color-text); }
@@ -19,18 +21,19 @@ a:hover { color: var(--color-accent-800); }
 @keyframes skRule { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 </style>
 <style>
-.x1:hover{color:var(--color-accent-300)}
-.x2:hover{color:var(--color-accent-300)}
-.x3:hover{color:var(--color-accent-300)}
-.x4:hover{color:var(--color-accent-300)}
-.x5:hover{background:var(--color-bg);border-color:var(--color-bg)}
-.x6:hover{background:color-mix(in srgb, #f2f2f3 10%, transparent)}
-.x7:hover{background:color-mix(in srgb, var(--color-accent) 7%, transparent);transform:translateY(-4px)}
-.x8:hover{background:color-mix(in srgb, var(--color-accent) 7%, transparent);transform:translateY(-4px)}
-.x9:hover{background:color-mix(in srgb, var(--color-accent) 7%, transparent);transform:translateY(-4px)}
-.x10:hover{background:var(--color-bg);border-color:var(--color-bg)}
-.x11:hover{color:var(--color-accent-300)}
-.x12:hover{color:var(--color-accent-300)}
+.x1:hover{color:var(--color-accent-300) !important}
+.x2:hover{color:var(--color-accent-300) !important}
+.x3:hover{color:var(--color-accent-300) !important}
+.x4:hover{color:var(--color-accent-300) !important}
+.x5:hover{background:var(--color-bg) !important;border-color:var(--color-bg) !important}
+.x6:hover{background:color-mix(in srgb, #f2f2f3 10%, transparent) !important}
+.x7:hover{background:color-mix(in srgb, var(--color-accent) 7%, transparent) !important;transform:translateY(-4px) !important}
+.x8:hover{background:color-mix(in srgb, var(--color-accent) 7%, transparent) !important;transform:translateY(-4px) !important}
+.x9:hover{background:color-mix(in srgb, var(--color-accent) 7%, transparent) !important;transform:translateY(-4px) !important}
+.x10:hover{background:var(--color-bg) !important;border-color:var(--color-bg) !important}
+.x11:hover{color:var(--color-accent-300) !important}
+.x12:hover{color:var(--color-accent-300) !important}
+.x13:hover{color:var(--color-accent-300) !important}
 [data-reveal].pre { opacity: 0; transform: translateY(18px); }
 [data-reveal].in { opacity: 1; transform: none; transition: opacity 700ms cubic-bezier(.2,.7,.3,1), transform 700ms cubic-bezier(.2,.7,.3,1); }
 </style>
@@ -168,6 +171,24 @@ a:hover { color: var(--color-accent-800); }
   </div>
 </section>
 
+<section id="behind-the-pages" style="padding:110px 40px 0;scroll-margin-top:70px">
+  <div style="width:min(1000px,100%);margin:0 auto">
+    <div data-reveal style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 18px;padding-bottom:14px;border-bottom:1px solid var(--color-divider);margin-bottom:26px">
+      <h2 style="margin:0;font-size:clamp(28px,3.2vw,44px);line-height:0.95;text-transform:uppercase">Behind the pages</h2>
+      <span style="font-size:14px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Notes, extras &amp; reading samples</span>
+    </div>
+    <ol data-reveal data-btp="list" class="btp-list">
+      <li class="btp-item btp-empty blueprint">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <span class="tag tag-neutral" style="letter-spacing:0.16em;text-transform:uppercase">Coming soon</span>
+        <h3>Nothing here yet</h3>
+        <p>The first look behind the pages will land here soon.</p>
+      </li>
+    </ol>
+    <a data-btp="more" class="btn btn-secondary" href="behind-the-pages.html" hidden style="margin-top:22px;padding:14px 24px;font-size:12px;letter-spacing:0.16em;text-transform:uppercase">See all &rarr;</a>
+  </div>
+</section>
+
 <section id="updates" style="padding:130px 40px;scroll-margin-top:70px">
   <div style="width:min(1000px,100%);margin:0 auto">
     <div data-reveal style="display:flex;align-items:baseline;gap:18px;padding-bottom:18px;border-bottom:1px solid var(--color-divider);margin-bottom:46px">
@@ -189,7 +210,7 @@ a:hover { color: var(--color-accent-800); }
           <span data-latest="date" style="margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)"></span>
         </div>
         <h3 data-latest="title" style="margin:0 0 14px;font-size:clamp(22px,2.3vw,30px);line-height:1.05;text-transform:uppercase">No updates yet</h3>
-        <p data-latest="body" style="margin:0;font-size:17px;line-height:1.7;white-space:pre-line;text-wrap:pretty">The first update will land here soon — check back shortly.</p>
+        <div data-latest="body" class="rich-text" style="font-size:17px;line-height:1.7"><p>The first update will land here soon — check back shortly.</p></div>
       </article>
     </div>
     <a data-reveal class="btn btn-secondary" href="updates.html" style="margin-top:26px;padding:14px 24px;font-size:12px;letter-spacing:0.16em;text-transform:uppercase">See all updates &rarr;</a>
@@ -201,6 +222,7 @@ a:hover { color: var(--color-accent-800); }
     <div data-reveal style="display:flex;flex-direction:column;gap:14px">
       <h2 style="margin:0;font-size:clamp(34px,4.4vw,60px);line-height:0.94;text-transform:uppercase">About me</h2>
       <div style="width:100%;height:1px;background:color-mix(in srgb, #f2f2f3 26%, transparent)"></div>
+      <a class="x13" href="https://www.instagram.com/writtenbyskyk" target="_blank" rel="noopener" aria-label="writtenbyskyk on Instagram (opens in a new tab)" style="align-self:flex-start;display:inline-flex;align-items:center;gap:10px;margin-top:4px;font-family:var(--font-heading);font-weight:600;font-size:16px;letter-spacing:0.08em;color:color-mix(in srgb, #f2f2f3 78%, transparent);text-decoration:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg>writtenbyskyk</a>
     </div>
     <div data-reveal style="display:flex;flex-direction:column;gap:22px;max-width:66ch">
       <p style="margin:0;font-size:clamp(19px,1.7vw,24px);line-height:1.55;text-wrap:pretty">Hey y'all! I'm Sky Kaye, a writer based in Vienna with a habit of creating fictional people, getting far too attached to them, and then making their lives considerably more difficult.</p>
@@ -219,6 +241,7 @@ a:hover { color: var(--color-accent-800); }
       <span>&copy; 2026 Sky Kaye</span>
       <a class="x11" href="legal-notice.html" style="color:inherit;text-decoration:none">Legal notice</a>
       <a class="x12" href="privacy-policy.html" style="color:inherit;text-decoration:none">Privacy policy</a>
+      <a class="x12" href="https://www.instagram.com/writtenbyskyk" target="_blank" rel="noopener" aria-label="Instagram (opens in a new tab)" style="color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg>Instagram</a>
     </div>
   </div>
 </section>
@@ -243,61 +266,77 @@ a:hover { color: var(--color-accent-800); }
   });
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/marked@18.0.14/lib/marked.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.16/dist/purify.min.js"></script>
+<script src="assets/js/content-feed.js"></script>
+<script src="assets/js/rich-text.js"></script>
+<script src="assets/js/behind-the-pages.js"></script>
 <script>
-/* Holt neue Posts aus updates/posts.json nach. Schlägt der Abruf fehl, bleibt der
-   vorgerenderte Inhalt stehen — die Seite ist ohne dieses Script vollständig. */
+/* Pulls fresh posts from updates/posts.json. If that fails, the pre-rendered
+   content stays — the page is complete without this script. */
 (function () {
-  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  /* Zeigt jeden Zeitstempel immer in Wiener Ortszeit (MEZ/MESZ, automatisch per
-     Intl-Zeitzonendatenbank), unabhängig davon, wo die Besucherin gerade ist. */
-  function fmt(iso) {
-    var d = new Date(iso);
-    if (isNaN(d)) return String(iso || '');
-    var parts = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Europe/Vienna', day: '2-digit', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
-    }).formatToParts(d).reduce(function (acc, p) { acc[p.type] = p.value; return acc; }, {});
-    return parts.day + ' ' + MON[parseInt(parts.month, 10) - 1] + ' ' + parts.year + ', ' + parts.hour + ':' + parts.minute;
-  }
-  fetch('updates/posts.json', { cache: 'no-store' })
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-    .then(function (d) {
-      var posts = (d && d.posts || []).filter(function (p) { return p && (p.body || p.title); });
-      if (!posts.length) return;
-      posts.sort(function (a, b) { return new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime(); });
-      posts = posts.map(function (p) {
-        return {
-          dateLabel: fmt(p.date),
-          tag: (p.tag || '').trim(),
-          title: p.title || '',
-          body: (p.body || '').trim(),
-          teaser: (p.title || (p.body || '').trim().split('\n')[0] || '').slice(0, 74)
-        };
-      });
-      render(posts);
-    })
+  if (!window.SkyFeed || !window.SkyRichText) return;
+  SkyFeed.load('updates/posts.json', 'posts', function (p) { return p.body || p.title; })
+    .then(function (posts) { if (posts.length) render(posts); })
     .catch(function () {});
+
+  function set(sel, val) {
+    var el = document.querySelector(sel);
+    if (el && val) el.textContent = val;
+  }
 
   function render(posts) {
     var top = posts[0], peek = posts[1];
-    function set(sel, val) {
-      var el = document.querySelector(sel);
-      if (el && val) el.textContent = val;
+    set('[data-latest="date"]', SkyFeed.formatDate(top.date));
+    var titleEl = document.querySelector('[data-latest="title"]');
+    if (titleEl) {
+      titleEl.textContent = top.title || '';
+      titleEl.hidden = !top.title;
     }
-    if (top) {
-      set('[data-latest="date"]', top.dateLabel);
-      set('[data-latest="title"]', top.title);
-      set('[data-latest="body"]', top.body);
-      var tagEl = document.querySelector('[data-latest="tag"]');
-      if (tagEl) {
-        tagEl.textContent = top.tag || 'Latest update';
-        tagEl.classList.remove('tag-neutral');
-        tagEl.classList.add('tag-accent');
-      }
+    var bodyEl = document.querySelector('[data-latest="body"]');
+    if (bodyEl) bodyEl.innerHTML = SkyRichText.render(top.body);
+    var tagEl = document.querySelector('[data-latest="tag"]');
+    if (tagEl) {
+      tagEl.textContent = (top.tag || '').trim() || 'Latest update';
+      tagEl.classList.remove('tag-neutral');
+      tagEl.classList.add('tag-accent');
     }
     if (peek) {
-      set('[data-peek="date"]', peek.dateLabel);
-      set('[data-peek="teaser"]', peek.teaser);
+      set('[data-peek="date"]', SkyFeed.formatDate(peek.date));
+      set('[data-peek="teaser"]', (peek.title || SkyRichText.firstLine(peek.body)).slice(0, 74));
     }
+  }
+})();
+</script>
+<script>
+/* Behind The Pages: the three newest entries, the newest one highlighted.
+   Without entries (or without the file) the pre-rendered empty state stays. */
+(function () {
+  if (!window.SkyArticles) return;
+  var SHOWN = 3;
+  var esc = SkyRichText.escape;
+
+  SkyArticles.load()
+    .then(function (entries) { if (entries.length) render(entries); })
+    .catch(function () {});
+
+  function item(entry, newest) {
+    return '<li class="btp-item' + (newest ? ' btp-item--newest blueprint' : '') + '">' +
+      (newest ? '<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>' : '') +
+      '<a class="btp-link" href="' + esc(SkyArticles.urlOf(entry)) + '">' +
+      (newest ? '<span class="tag tag-accent btp-badge">Newest</span>' : '') +
+      '<span class="btp-title">' + esc(entry.title) + '</span>' +
+      '<span class="btp-meta"><span class="btp-date">' + esc(SkyFeed.formatDate(entry.date)) + '</span>' +
+      '<span>Reading Time ' + SkyArticles.minutesLabel(entry.readingTime) + '</span></span>' +
+      '</a></li>';
+  }
+
+  function render(entries) {
+    var list = document.querySelector('[data-btp="list"]');
+    if (!list) return;
+    list.innerHTML = entries.slice(0, SHOWN).map(function (e, i) { return item(e, i === 0); }).join('');
+    var more = document.querySelector('[data-btp="more"]');
+    if (more) more.hidden = entries.length <= SHOWN;
   }
 })();
 </script>

@@ -87,6 +87,17 @@
 // ─────────────────────────────────────────────────────────────────────────────
 window.CMS_MANUAL_INIT = true;
 
+// Fields shared by both collections, so date handling and the editor stay identical.
+function dateField(things) {
+  return { name: "date", label: "Datum & Uhrzeit", widget: "datetime", format: "YYYY-MM-DDTHH:mm:ssZ", picker_utc: false, hint: "Auch Vergangenheit oder Zukunft möglich — " + things + " reihen sich automatisch chronologisch ein. Eingabe in deiner lokalen Zeit (Wien); auf der Seite wird immer Wiener Zeit angezeigt, Sommer-/Winterzeit automatisch berücksichtigt." };
+}
+var BODY_FIELD = {
+  name: "body", label: "Text", widget: "markdown",
+  buttons: ["bold", "italic", "link", "heading-two", "heading-three", "quote", "bulleted-list", "numbered-list"],
+  editor_components: [],
+  hint: "Text markieren und oben in der Leiste formatieren. Enter = neuer Absatz, Shift+Enter = Zeilenumbruch."
+};
+
 var CMS_CONFIG = {
   backend: {
     name: "git-gateway",         // Netlify Identity: Login per E-Mail, kein GitHub-Konto nötig
@@ -121,10 +132,42 @@ var CMS_CONFIG = {
               widget: "list",
               summary: "{{fields.date}} — {{fields.title}}",
               fields: [
-                { name: "date", label: "Datum & Uhrzeit", widget: "datetime", format: "YYYY-MM-DDTHH:mm:ssZ", picker_utc: false, hint: "Auch Vergangenheit oder Zukunft möglich — Posts reihen sich automatisch chronologisch ein. Eingabe in deiner lokalen Zeit (Wien); auf der Seite wird immer Wiener Zeit angezeigt, Sommer-/Winterzeit automatisch berücksichtigt." },
+                dateField("Posts"),
                 { name: "tag", label: "Badge", widget: "string", required: false, hint: "Nur beim neuesten Post sichtbar — kleines Label über der Überschrift, z. B. 'Neuigkeit' oder 'Meilenstein'. Leer lassen für 'Latest update'." },
                 { name: "title", label: "Titel", widget: "string", required: false, hint: "Optional. Ohne Titel erscheint nur Datum und Text." },
-                { name: "body", label: "Text", widget: "text", hint: "Leerzeile = neuer Absatz." }
+                BODY_FIELD
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: "behind_the_pages",
+      label: "Behind The Pages",
+      type: "file_based_collection",
+      sortable_fields: [],
+      view_filters: [],
+      view_groups: [],
+      files: [
+        {
+          name: "articles",
+          label: "Behind The Pages",
+          file: "src/behind-the-pages/articles.json",
+          description: "Artikel und Leseproben — jeder Eintrag bekommt automatisch eine eigene, teilbare Seite. Sortiert wird automatisch.",
+          fields: [
+            {
+              name: "articles",
+              label: "Einträge",
+              label_singular: "Eintrag",
+              widget: "list",
+              summary: "{{fields.date}} — {{fields.title}}",
+              fields: [
+                { name: "id", label: "Link-Kennung", widget: "stable-id", hint: "Wird automatisch vergeben und ändert sich nie — so funktionieren geteilte Links auch dann noch, wenn du Titel oder Datum später änderst." },
+                dateField("Einträge"),
+                { name: "title", label: "Titel", widget: "string", hint: "Erscheint auf der Startseite, in der Übersicht und als Überschrift der Seite." },
+                { name: "reading_time", label: "Reading Time (Minuten)", widget: "number", value_type: "int", min: 1, hint: "Nur die Zahl, z. B. 5 — auf der Seite steht dann „Reading Time 5 minutes“." },
+                BODY_FIELD
               ]
             }
           ]
@@ -137,6 +180,7 @@ var CMS_CONFIG = {
 
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://unpkg.com/decap-cms@3.16.0/dist/decap-cms.js"></script>
+<script src="stable-id-widget.js"></script>
 <script>
 (function () {
   var setup = document.getElementById('setup');

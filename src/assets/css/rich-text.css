@@ -1,0 +1,52 @@
+/* Formatted text written by the author in the Decap editor (rendered by
+   assets/js/rich-text.js). Font size and line height come from the container,
+   so the same markup fits the update cards and the Behind The Pages articles. */
+
+.rich-text { text-wrap: pretty; }
+.rich-text > * { margin: 0; }
+
+/* One empty line between blocks — exactly the gap the former plain-text
+   rendering (white-space: pre-line) produced for a blank line. */
+.rich-text > * + * { margin-top: 1.7em; margin-top: 1lh; }
+
+.rich-text h3, .rich-text h4, .rich-text h5, .rich-text h6 {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  line-height: 1.1; letter-spacing: 0.02em; text-transform: uppercase;
+}
+.rich-text h3 { font-size: 1.45em; }
+.rich-text h4 { font-size: 1.2em; }
+.rich-text h5, .rich-text h6 { font-size: 1em; letter-spacing: 0.08em; }
+/* A heading belongs to the text below it: less space after than before. */
+.rich-text > :is(h3, h4, h5, h6) + * { margin-top: 0.6em; }
+
+.rich-text strong { font-weight: 700; }
+.rich-text a { color: var(--color-accent-700); text-underline-offset: 3px; }
+.rich-text a:hover { color: var(--color-accent-800); }
+.rich-text code {
+  font-family: ui-monospace, Menlo, monospace; font-size: 0.88em;
+  background: color-mix(in srgb, var(--color-text) 7%, transparent); padding: 1px 5px;
+}
+
+.rich-text ul, .rich-text ol { padding-left: 1.4em; }
+.rich-text li + li { margin-top: 0.35em; }
+.rich-text li::marker { color: var(--color-accent-700); }
+
+.rich-text blockquote {
+  padding: 2px 0 2px 20px;
+  border-left: 2px solid var(--color-accent-500);
+  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  font-style: italic;
+}
+.rich-text blockquote > * { margin: 0; }
+.rich-text blockquote > * + * { margin-top: 0.8em; }
+
+/* Scene break — same diamond-on-a-rule ornament as the reading sample. */
+.rich-text hr {
+  position: relative; width: 118px; height: 1px; margin-left: auto; margin-right: auto;
+  border: 0; background: var(--color-divider); overflow: visible;
+}
+.rich-text hr::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 5px; height: 5px;
+  background: var(--color-accent-700); transform: translate(-50%, -50%) rotate(45deg);
+  box-shadow: 0 0 0 7px var(--color-bg);
+}

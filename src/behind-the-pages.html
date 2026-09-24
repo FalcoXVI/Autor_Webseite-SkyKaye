@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Updates — Sky Kaye</title>
-<meta name="description" content="Writing progress, setbacks and news from Sky Kaye.">
-<meta property="og:title" content="Updates — Sky Kaye">
-<meta property="og:description" content="Writing progress, setbacks and news from Sky Kaye.">
+<title>Behind The Pages — Sky Kaye</title>
+<meta name="description" content="Notes, extras and reading samples from behind the pages of Sky Kaye's stories.">
+<meta property="og:title" content="Behind The Pages — Sky Kaye">
+<meta property="og:description" content="Notes, extras and reading samples from behind the pages of Sky Kaye's stories.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="assets/img/sky-kaye-logo.jpeg">
 <link rel="stylesheet" href="assets/css/industry.css">
 <link rel="stylesheet" href="assets/css/responsive.css">
 <link rel="stylesheet" href="assets/css/rich-text.css">
+<link rel="stylesheet" href="assets/css/behind-the-pages.css">
 <style>
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--color-bg); color: var(--color-text); }
@@ -45,30 +46,25 @@ a:hover { color: var(--color-accent-800); }
 
 <section style="padding:150px 40px 60px">
   <div style="width:min(920px,100%);margin:0 auto;display:flex;flex-direction:column;gap:18px">
-    <h1 style="margin:0;font-size:clamp(44px,7vw,110px);line-height:0.88;text-transform:uppercase">All updates</h1>
-    <p style="margin:0;max-width:56ch;font-size:16px;line-height:1.75;color:color-mix(in srgb, var(--color-text) 72%, transparent)">Progress, setbacks, chapter counts and the occasional complaint about chapter nine — newest first.</p>
+    <h1 style="margin:0;font-size:clamp(44px,7vw,110px);line-height:0.88;text-transform:uppercase">Behind the pages</h1>
+    <p style="margin:0;max-width:56ch;font-size:16px;line-height:1.75;color:color-mix(in srgb, var(--color-text) 72%, transparent)">Notes, extras and reading samples from behind the pages — newest first.</p>
     <div style="height:1px;background:var(--color-divider);margin-top:14px"></div>
   </div>
 </section>
 
 <section style="padding:0 40px 130px">
   <div style="width:min(920px,100%);margin:0 auto;display:flex;flex-direction:column">
-    <div id="feed" style="display:flex;flex-direction:column">
-
-    <article class="blueprint" style="padding:34px;margin-bottom:44px;background:color-mix(in srgb, var(--color-accent) 6%, transparent)">
-      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
-      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:20px">
-        <span class="tag tag-neutral" style="letter-spacing:0.16em;text-transform:uppercase">Coming soon</span>
-        <span style="font-family:var(--font-heading);font-weight:600;font-size:15px;letter-spacing:0.12em;text-transform:uppercase">Sky Kaye</span>
-      </div>
-      <h2 style="margin:0 0 14px;font-size:clamp(24px,2.6vw,34px);line-height:1.05;text-transform:uppercase">No updates yet</h2>
-      <p style="margin:0;font-size:17px;line-height:1.7;text-wrap:pretty">Nothing posted so far — the first update will appear here.</p>
-    </article>
-
-    </div>
+    <table class="btp-table">
+      <thead>
+        <tr><th scope="col">Title</th><th scope="col" class="btp-col-date">Published</th><th scope="col" class="btp-col-time">Reading time</th></tr>
+      </thead>
+      <tbody id="btp-rows">
+        <tr><td colspan="3" class="btp-table-empty">Nothing here yet — the first look behind the pages will appear here soon.</td></tr>
+      </tbody>
+    </table>
 
     <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start;margin-top:54px;padding:26px 0;border-top:1px solid var(--color-divider)">
-      <a class="btn btn-secondary" href="index.html#updates" style="padding:14px 24px;font-size:12px;letter-spacing:0.16em;text-transform:uppercase">&larr; Back to the homepage</a>
+      <a class="btn btn-secondary" href="index.html#behind-the-pages" style="padding:14px 24px;font-size:12px;letter-spacing:0.16em;text-transform:uppercase">&larr; Back to the homepage</a>
     </div>
   </div>
 </section>
@@ -107,41 +103,24 @@ a:hover { color: var(--color-accent-800); }
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.16/dist/purify.min.js"></script>
 <script src="assets/js/content-feed.js"></script>
 <script src="assets/js/rich-text.js"></script>
+<script src="assets/js/behind-the-pages.js"></script>
 <script>
-/* Pulls fresh posts from updates/posts.json. If that fails, the pre-rendered
-   content stays — the page is complete without this script. */
+/* Replaces the pre-rendered empty row with all entries, newest first. */
 (function () {
-  if (!window.SkyFeed || !window.SkyRichText) return;
+  if (!window.SkyArticles) return;
   var esc = SkyRichText.escape;
-  SkyFeed.load('updates/posts.json', 'posts', function (p) { return p.body || p.title; })
-    .then(function (posts) { if (posts.length) render(posts); })
+  SkyArticles.load()
+    .then(function (entries) { if (entries.length) render(entries); })
     .catch(function () {});
 
-  function render(posts) {
-    var feed = document.getElementById('feed');
-    if (!feed) return;
-    var top = posts[0];
-    var html = '<article class="blueprint" style="padding:34px;margin-bottom:44px;background:color-mix(in srgb, var(--color-accent) 6%, transparent)">' +
-      '<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>' +
-      '<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-bottom:20px">' +
-      '<span class="tag tag-accent" style="letter-spacing:0.16em;text-transform:uppercase">' + esc((top.tag || '').trim() || 'Latest update') + '</span>' +
-      '<span style="font-family:var(--font-heading);font-weight:600;font-size:15px;letter-spacing:0.12em;text-transform:uppercase">Sky Kaye</span>' +
-      '<span style="margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">' + esc(SkyFeed.formatDate(top.date)) + '</span>' +
-      '</div>' +
-      (top.title ? '<h2 style="margin:0 0 14px;font-size:clamp(24px,2.6vw,34px);line-height:1.05;text-transform:uppercase">' + esc(top.title) + '</h2>' : '') +
-      '<div class="rich-text" style="font-size:17px;line-height:1.7">' + SkyRichText.render(top.body) + '</div></article>';
-    for (var i = 1; i < posts.length; i++) {
-      var p = posts[i];
-      html += '<article style="display:grid;grid-template-columns:130px minmax(0,1fr);gap:34px;padding:34px 0;border-top:1px solid var(--color-divider)">' +
-        '<div style="display:flex;flex-direction:column;gap:6px">' +
-        '<span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--color-accent-700)">' + esc(SkyFeed.formatDate(p.date)) + '</span>' +
-        '<span style="font-family:var(--font-heading);font-weight:600;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Sky Kaye</span>' +
-        '</div><div style="display:flex;flex-direction:column;gap:12px">' +
-        (p.title ? '<h2 style="margin:0;font-family:var(--font-heading);font-weight:600;font-size:clamp(20px,2.2vw,27px);line-height:1.1;text-transform:uppercase">' + esc(p.title) + '</h2>' : '') +
-        '<div class="rich-text" style="font-size:16px;line-height:1.75">' + SkyRichText.render(p.body) + '</div>' +
-        '</div></article>';
-    }
-    feed.innerHTML = html;
+  function render(entries) {
+    document.getElementById('btp-rows').innerHTML = entries.map(function (e) {
+      return '<tr>' +
+        '<td><a class="btp-table-title" href="' + esc(SkyArticles.urlOf(e)) + '">' + esc(e.title) + '</a></td>' +
+        '<td class="btp-col-date"><span class="btp-date">' + esc(SkyFeed.formatDate(e.date)) + '</span></td>' +
+        '<td class="btp-col-time"><span class="btp-mobile-label">Reading Time </span>' + SkyArticles.minutesLabel(e.readingTime) + '</td>' +
+        '</tr>';
+    }).join('');
   }
 })();
 </script>
