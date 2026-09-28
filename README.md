@@ -20,6 +20,11 @@ src/
   admin/                  Redaktionsoberfläche (Updates, Behind The Pages)
     index.html            Decap-Konfiguration
     stable-id-widget.js   Widget, das jedem Behind-The-Pages-Eintrag eine feste Link-Kennung gibt
+    rich-text-widget.js   Widget „rich-text": WYSIWYG-Editor (TipTap) für den Text, speichert HTML
+    rich-text-extensions.js  TipTap-Erweiterungen: Größe, Farbe, Schriftart, Unterstreichungsarten, Einzug, Ausrichtung
+    rich-text-toolbar.js  Formatierungsleiste des Editors
+    rich-text-paste.js    Aufräumen beim Einfügen aus Word (Listen)
+    rich-text-widget.css  Aussehen von Leiste und Textfeld
     README.md             Anleitung: Inhalte pflegen
   updates/
     posts.json            die Updates selbst
@@ -32,7 +37,7 @@ src/
     css/rich-text.css     Darstellung des formatierten Texts aus dem Editor
     css/behind-the-pages.css  Liste auf der Startseite, Übersichtstabelle
     js/content-feed.js    gemeinsam: JSON laden, nach Datum sortieren, Datum in Wiener Zeit
-    js/rich-text.js       gemeinsam: Markdown → sicheres HTML (marked + DOMPurify)
+    js/rich-text.js       gemeinsam: erlaubte Formate + HTML aus dem Editor → sicheres HTML (DOMPurify)
     js/behind-the-pages.js  Behind The Pages: Laden, feste URLs, Reading Time
     js/support.js         (aktuell ungenutzt — Rest eines Design-Tool-Exports, siehe unten)
     img/                  Logo & Cover
@@ -67,7 +72,8 @@ ist `src`**.
 - **Redaktionsoberfläche:** `/admin` zeigt eine Einrichtungsseite, solange die Site mit
   keinem GitHub-Repository verbunden ist oder Identity + Git Gateway noch fehlen — die
   Schritte stehen in `src/admin/README.md`. Bis dahin lassen sich Updates auch direkt in
-  `src/updates/posts.json` eintragen: Datum, Titel, Text, neuester Post zuerst.
+  `src/updates/posts.json` eintragen: Datum, Titel, Text (reiner Text oder HTML, siehe
+  „Formatierter Text"), die Reihenfolge ist egal.
 
 ## Wie neue Updates auf die Seite kommen
 
@@ -90,15 +96,43 @@ Sichtbarkeit reicht das; die tragenden Inhalte der Seite ändern sich ohnehin se
 
 ## Formatierter Text
 
-Texte werden im Admin mit einem Markdown-Editor mit Formatierungsleiste geschrieben (fett,
-kursiv, Link, Überschriften, Zitat, Listen) und als Markdown gespeichert.
-`assets/js/rich-text.js` wandelt das im Browser mit `marked` in HTML um und reinigt es
-mit `DOMPurify` (nur eine feste Liste harmloser Tags bleibt übrig). Beide Bibliotheken
-kommen versioniert vom CDN (jsDelivr) — ein Build-Schritt bleibt unnötig. Fällt das CDN
-aus, erscheint der Text unformatiert, aber vollständig.
+Der Autor schreibt im Admin mit einem WYSIWYG-Editor wie in Word: fett, kursiv,
+durchgestrichen, vier Unterstreichungsarten, Größe, Farbe, Schriftart, Link, zwei
+Überschriften, Zitat, Trennlinie, Listen, Einzug, Erstzeileneinzug und Ausrichtung.
+Gespeichert wird **HTML** im Feld `body`.
 
-Alte Posts aus reinem Text brauchen keine Migration: Leerzeile = neuer Absatz, einfacher
-Zeilenumbruch bleibt ein Zeilenumbruch — sie sehen pixelgenau aus wie vorher.
+- **Editor:** eigenes Decap-Widget `rich-text` (`admin/rich-text-widget.js`) auf Basis von
+  [TipTap 3](https://tiptap.dev) (ProseMirror, MIT). TipTap kommt als ES-Modul versioniert
+  von esm.sh und wird nur im Admin geladen; `admin/index.html` ruft `CMS.init` erst auf,
+  wenn das Modul registriert ist. TipTap statt Quill, weil Shift+Enter (`<br>`) eingebaut
+  ist, jedes Format eigenes HTML (Klassen) rendert und beim Einfügen nur übrig bleibt, was
+  im Schema steht.
+- **Formate als Klassen, nicht als Inline-Styles:** Größen, Farben, Schriftarten,
+  Unterstreichungsarten, Einzug und Ausrichtung sind feste Presets in
+  `SkyRichText.formats` (`assets/js/rich-text.js`), z. B. `<span class="fs-large c-blue">`
+  oder `<p class="indent-1 align-center">`. Die Werkzeugleiste baut ihre Menüs daraus,
+  `assets/css/rich-text.css` gibt jeder Klasse ihr Aussehen. Größen sind relativ (`em`),
+  passen also in die Update-Karte (17px), den Artikel (19px) und mobil. Die Serifenschrift
+  ist Tinos (Google Fonts, metrisch gleich wie Times New Roman) mit Times New Roman,
+  Georgia und serif als Ersatz. Ein neues Preset = Eintrag in `formats` + CSS-Regel.
+- **Sicherheit:** `assets/js/rich-text.js` reinigt das HTML vor dem `innerHTML` mit
+  DOMPurify: nur die Tags `p br strong em s u span a blockquote ul ol li h3 h4 hr`, die
+  Attribute `href`, `class` (nur Klassen aus `formats`) und `start` (nur Zahlen, nur an
+  `ol`). `style`, `<script>`, Event-Handler und `javascript:`-Links überleben nicht.
+- **Teaser/Meta-Description:** `SkyRichText.firstLine()` liefert die erste Zeile als reinen
+  Text (per `DOMParser`, der nichts ausführt oder lädt).
+- **Fallback:** Fällt das CDN mit DOMPurify aus, zerlegt `rich-text.js` das HTML in reinen
+  Text und zeigt es unformatiert, aber vollständig. Kann der Admin den Editor nicht laden,
+  zeigt `/admin` eine Fehlermeldung statt eines halb funktionierenden Formulars.
+- **Einfügen aus Word/Google Docs:** Der Editor übernimmt nur Formate aus seinem Schema
+  (fett, kursiv, unterstrichen, durchgestrichen, Links, Listen, Überschriften, Ausrichtung).
+  Fremde Schriften, Farben und Größen fallen weg. Word-Listen (in Wahrheit Absätze mit
+  `mso-list`) wandelt `admin/rich-text-paste.js` in echte Listen um.
+
+Die Einträge von vor dem Editor waren Markdown und wurden einmalig mit der bisherigen
+marked-Konfiguration nach HTML migriert (sie sehen pixelgleich aus wie vorher). Einen
+Renderer für beide Formate gibt es bewusst nicht. Reiner Text ohne jedes Tag wird
+weiterhin verstanden (Leerzeile = neuer Absatz), Markdown nicht mehr.
 
 ## Konten & Login (Netlify Identity)
 

@@ -23,17 +23,42 @@ Homepage lesen daraus. Ein neuer Post erscheint also automatisch an beiden Stell
 
 ### Text formatieren
 
-Über dem Textfeld sitzt eine Leiste wie in Word: **B** fett, *I* kursiv, Link, **H**
-Überschrift (zwei Größen), Zitat, Aufzählung und Nummerierung. Text markieren, Knopf
-drücken — fertig. **Enter** beginnt einen neuen Absatz, **Shift+Enter** macht einen
-einfachen Zeilenumbruch. Den Schalter „Rich Text / Markdown" rechts oben kannst du
-ignorieren.
+Das Textfeld funktioniert wie Word: Was du dort siehst, erscheint genau so auf der
+Website. Text markieren, dann oben in der Leiste die Formatierung wählen. Fährst du mit
+der Maus über einen Knopf, erscheint ein kurzer Hinweis, was er macht.
 
-Schriftart, freie Schriftgröße und Ausrichtung gibt es bewusst nicht — der Text übernimmt
-automatisch Schrift und Farben der Website. Größer wird Text über „Überschrift".
+| Knopf / Menü | Was es macht |
+|---|---|
+| ↶ ↷ | Rückgängig / Wiederholen (auch Strg+Z / Strg+Y) |
+| **B**, *I*, ~~S~~ | fett (Strg+B), kursiv (Strg+I), durchgestrichen |
+| „U – …" | unterstreichen: einfach, doppelt, gewellt oder gepunktet (Strg+U = einfach) |
+| Größe | Klein, Normal, Groß, Sehr groß |
+| Farbe | Standard, Blau, Dunkelblau, Grau, Rot |
+| Schriftart | Barlow (Standard der Website), Barlow Condensed, Tinos (sieht aus wie Times New Roman) |
+| Kette | Link setzen oder ändern — Adresse eintippen, z. B. `https://…`; durchgestrichene Kette entfernt ihn |
+| **H** groß / **H** klein | zwei Überschriftsgrößen |
+| Zitat, Trennlinie | eingerücktes, kursives Zitat; Trennlinie mit Raute (Szenenwechsel) |
+| Aufzählung, Nummerierung | Listen mit Punkten oder Zahlen |
+| Einzug ← / → | ganzen Absatz einrücken (bis zu drei Stufen); in einer Liste wird der Punkt eine Ebene tiefer gesetzt. Geht auch mit **Tab** / **Shift+Tab** |
+| Erstzeileneinzug | nur die erste Zeile des Absatzes einrücken, wie im Buch |
+| Links / Zentriert / Rechts | Ausrichtung des Absatzes |
+| Radiergummi | entfernt alle Formatierungen des markierten Texts |
 
-Die Vorschau rechts im Admin ist nur eine grobe Ansicht (sie verschluckt z. B. einfache
-Zeilenumbrüche); verbindlich ist, wie es auf der Website aussieht.
+**Enter** beginnt einen neuen Absatz, **Shift+Enter** macht einen einfachen
+Zeilenumbruch — wie bisher.
+
+Größen, Farben und Schriftarten sind bewusst eine feste Auswahl: Sie passen zum Design
+der Website, sind auf dem hellen Hintergrund gut lesbar und wirken auf dem Handy genauso
+wie am Computer.
+
+**Einfügen aus Word oder Google Docs:** geht ganz normal mit Strg+V. Fett, kursiv,
+unterstrichen, Listen, Überschriften und Links bleiben erhalten; fremde Schriftarten,
+Farben und Größen werden weggelassen, damit der Text zur Website passt. Danach kannst du
+ihn mit der Leiste nachformatieren. Willst du gar keine Formatierung übernehmen:
+Strg+Shift+V fügt nur den reinen Text ein.
+
+Die Vorschau rechts im Admin zeigt den Text mit Schriften, Farben und Größen wie auf der
+Artikelseite der Website.
 
 Der Rest passiert unsichtbar: Netlify schreibt die Änderung ins Repository und baut die
 Seite neu. Nach etwa einer Minute steht der Post online. Kein Server, keine Datenbank,
@@ -83,7 +108,7 @@ zeigt sein alter Link eine „Page not found"-Seite mit Verweis auf die Übersic
 ```json
 {
   "posts": [
-    { "date": "2026-08-09T14:30:00+02:00", "tag": "Meilenstein", "title": "Out in the trenches", "body": "Erster Absatz mit **fett**.\n\nZweiter Absatz." }
+    { "date": "2026-08-09T14:30:00+02:00", "tag": "Meilenstein", "title": "Out in the trenches", "body": "<p>Erster Absatz mit <strong>fett</strong>.</p><p>Zweiter Absatz.</p>" }
   ]
 }
 ```
@@ -93,13 +118,16 @@ zeigt sein alter Link eine „Page not found"-Seite mit Verweis auf die Übersic
 ```json
 {
   "articles": [
-    { "id": "k3f9a2", "date": "2026-09-25T14:30:00+02:00", "title": "Why chapter nine hates me", "reading_time": 5, "body": "Markdown-Text …" }
+    { "id": "k3f9a2", "date": "2026-09-25T14:30:00+02:00", "title": "Why chapter nine hates me", "reading_time": 5, "body": "<p>Text …</p>" }
   ]
 }
 ```
 
-`body` ist Markdown. Alte Texte ohne jede Formatierung sind ebenfalls gültig (Leerzeile =
-neuer Absatz, einfacher Zeilenumbruch bleibt erhalten). `id` vergibt der Admin; wer einen
+`body` ist HTML, wie es der Editor erzeugt. Erlaubt sind nur die Tags `p br strong em s u
+span a blockquote ul ol li h3 h4 hr` und die Klassen aus `SkyRichText.formats`
+(`assets/js/rich-text.js`) — alles andere entfernt die Website beim Anzeigen. Wer von Hand
+einträgt, kann auch reinen Text ohne jedes Tag schreiben (Leerzeile = neuer Absatz,
+einfacher Zeilenumbruch bleibt erhalten); Markdown wird **nicht** mehr umgewandelt. `id` vergibt der Admin; wer einen
 Eintrag von Hand anlegt, trägt eine beliebige eindeutige Kennung aus Kleinbuchstaben und
 Ziffern ein (ohne `-`). Fehlt sie, wird ersatzweise der Zeitstempel verwendet.
 

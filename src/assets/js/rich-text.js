@@ -1,29 +1,69 @@
 /**
- * Turns the author's Markdown (written in the Decap editor) into sanitized HTML.
+ * Formatted text written by the author in the Decap editor (admin/rich-text-widget.js):
+ * the list of allowed formats and the sanitizing renderer for the website.
  *
- * Plain-text posts from before the editor existed are valid input as well:
- * `breaks: true` keeps single line breaks, blank lines still start a new
- * paragraph, so they render exactly as they did with `white-space: pre-line`.
+ * The editor stores HTML. Only the tags in ALLOWED_TAGS and the classes built
+ * from FORMATS survive DOMPurify — no inline styles, no scripts, no event handlers.
+ * Plain text without any tag (e.g. typed into the JSON by hand) is valid input as
+ * well: a blank line starts a new paragraph, a single line break stays a line break.
  *
- * Requires `marked` and `DOMPurify` (loaded from the CDN before this file).
- * Without them it falls back to the old plain-text rendering.
+ * Requires `DOMPurify` (loaded from the CDN before this file). Without it the
+ * text is shown unformatted but complete.
  * Exposes one global, `SkyRichText`. Pair the output with `.rich-text` (rich-text.css).
  */
 (function () {
-  var hasLibs = !!(window.marked && window.marked.Marked && window.DOMPurify);
+  var hasPurify = !!window.DOMPurify;
 
-  var ALLOWED_TAGS = ['p', 'br', 'strong', 'em', 'del', 'code', 'a', 'blockquote', 'ul', 'ol', 'li', 'h3', 'h4', 'h5', 'h6', 'hr'];
+  /**
+   * Curated formats. Each value becomes the CSS class `prefix + value`
+   * (styled in rich-text.css); `null` stands for the site's default look and
+   * produces no class. The admin toolbar builds its menus from this list.
+   */
+  var FORMATS = {
+    fontSize: { prefix: 'fs-', label: 'Größe', options: [
+      { value: 'small', label: 'Klein' }, { value: null, label: 'Normal' },
+      { value: 'large', label: 'Groß' }, { value: 'xl', label: 'Sehr groß' }
+    ] },
+    textColor: { prefix: 'c-', label: 'Farbe', options: [
+      { value: null, label: 'Standard' }, { value: 'blue', label: 'Blau' },
+      { value: 'navy', label: 'Dunkelblau' }, { value: 'grey', label: 'Grau' }, { value: 'red', label: 'Rot' }
+    ] },
+    fontFamily: { prefix: 'ff-', label: 'Schriftart', options: [
+      { value: null, label: 'Barlow (Standard)' }, { value: 'condensed', label: 'Barlow Condensed' },
+      { value: 'serif', label: 'Tinos (wie Times)' }
+    ] },
+    underline: { prefix: 'u-', label: 'Unterstreichen', options: [
+      { value: null, label: 'Einfach' }, { value: 'double', label: 'Doppelt' },
+      { value: 'wavy', label: 'Gewellt' }, { value: 'dotted', label: 'Gepunktet' }
+    ] },
+    indent: { prefix: 'indent-', label: 'Einzug', options: [
+      { value: null, label: 'Kein' }, { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' }
+    ] },
+    align: { prefix: 'align-', label: 'Ausrichtung', options: [
+      { value: null, label: 'Links' }, { value: 'center', label: 'Zentriert' }, { value: 'right', label: 'Rechts' }
+    ] }
+  };
+  var FIRST_LINE_CLASS = 'first-line';
 
-  var md = hasLibs ? new window.marked.Marked({
-    gfm: true,
-    breaks: true,
-    walkTokens: function (token) {
-      // The entry title is the page's h1/h2, so the author's headings start one level below it.
-      if (token.type === 'heading') token.depth = Math.min(Math.max(token.depth, 2) + 1, 6);
-    }
-  }) : null;
+  var ALLOWED_TAGS = ['p', 'br', 'strong', 'em', 's', 'u', 'span', 'a', 'blockquote', 'ul', 'ol', 'li', 'h3', 'h4', 'hr'];
+  var ALLOWED_ATTR = ['href', 'class', 'start'];
+  var BLOCK_SELECTOR = 'p, h1, h2, h3, h4, h5, h6, li, blockquote';
 
-  if (hasLibs) {
+  var ALLOWED_CLASSES = Object.keys(FORMATS).reduce(function (set, key) {
+    FORMATS[key].options.forEach(function (o) { if (o.value) set[FORMATS[key].prefix + o.value] = true; });
+    return set;
+  }, (function () { var s = {}; s[FIRST_LINE_CLASS] = true; return s; })());
+
+  if (hasPurify) {
+    // Keep only whitelisted classes and a numeric list start — anything else is dropped.
+    window.DOMPurify.addHook('uponSanitizeAttribute', function (node, data) {
+      if (data.attrName === 'class') {
+        data.attrValue = data.attrValue.split(/\s+/).filter(function (c) { return ALLOWED_CLASSES[c]; }).join(' ');
+        if (!data.attrValue) data.keepAttr = false;
+      } else if (data.attrName === 'start') {
+        data.keepAttr = node.nodeName === 'OL' && /^\d{1,4}$/.test(data.attrValue);
+      }
+    });
     // External links open in a new tab, like every other outbound link on the site.
     window.DOMPurify.addHook('afterSanitizeAttributes', function (node) {
       if (node.tagName !== 'A' || !node.getAttribute('href')) return;
@@ -48,33 +88,72 @@
   }
 
   /**
-   * Renders Markdown to sanitized HTML block elements.
-   * @param {string} markdown
-   * @returns {string} Safe HTML; use inside an element with class `rich-text`.
+   * Returns the stored body as HTML. Plain text (no tag at all) becomes
+   * paragraphs: blank line = new paragraph, single line break = `<br>`.
+   * @param {string} body
+   * @returns {string} Unsanitized HTML.
    */
-  function render(markdown) {
-    var source = String(markdown || '').trim();
-    if (!hasLibs) return '<p style="white-space:pre-line">' + escape(source) + '</p>';
-    return window.DOMPurify.sanitize(md.parse(source), {
-      ALLOWED_TAGS: ALLOWED_TAGS,
-      ALLOWED_ATTR: ['href', 'title']
-    });
+  function toHtml(body) {
+    var source = String(body || '').trim();
+    if (!source || /<\/?[a-z][^>]*>/i.test(source)) return source;
+    return source.split(/\n\s*\n/).map(function (para) {
+      return '<p>' + escape(para.trim()).replace(/\n/g, '<br>') + '</p>';
+    }).join('');
   }
 
   /**
-   * First line of the text without Markdown syntax — for teasers and meta descriptions.
-   * @param {string} markdown
-   * @returns {string}
+   * Plain text of every innermost block (paragraph, heading, list item), line
+   * breaks kept as "\n". DOMParser builds an inert document: nothing in it is
+   * executed or loaded, so this is safe even for unsanitized input.
+   * @param {string} html
+   * @param {boolean} withMarkers Prefix list items with "•" / "1.".
+   * @returns {string[]}
    */
-  function firstLine(markdown) {
-    var line = String(markdown || '').trim().split('\n')[0] || '';
-    // Drop block markers (heading, quote, list item) before rendering the inline rest.
-    line = line.replace(/^\s*(#{1,6}\s+|>\s*|[-*+]\s+|\d+[.)]\s+)/, '');
-    if (!hasLibs) return line;
-    var d = document.createElement('div');
-    d.innerHTML = window.DOMPurify.sanitize(md.parseInline(line), { ALLOWED_TAGS: [] });
-    return d.textContent;
+  function textBlocks(html, withMarkers) {
+    var body = new DOMParser().parseFromString(html, 'text/html').body;
+    // Source formatting (indentation, newlines between tags) is not content.
+    var walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
+    for (var n = walker.nextNode(); n; n = walker.nextNode()) n.nodeValue = n.nodeValue.replace(/\s+/g, ' ');
+    Array.prototype.forEach.call(body.querySelectorAll('br'), function (br) { br.replaceWith('\n'); });
+
+    var blocks = Array.prototype.filter.call(body.querySelectorAll(BLOCK_SELECTOR), function (el) {
+      return !el.querySelector(BLOCK_SELECTOR);
+    });
+    if (!blocks.length) blocks = [body];
+    return blocks.map(function (el) {
+      var text = el.textContent.split('\n').map(function (l) { return l.trim(); }).join('\n').trim();
+      var li = el.closest('li');
+      if (!withMarkers || !li || (li !== el && li.firstElementChild !== el)) return text;
+      var list = li.parentElement;
+      var nr = Array.prototype.indexOf.call(list.children, li) + (parseInt(list.getAttribute('start'), 10) || 1);
+      return (list.tagName === 'OL' ? nr + '. ' : '• ') + text;
+    }).filter(Boolean);
   }
 
-  window.SkyRichText = { render: render, firstLine: firstLine, escape: escape };
+  /**
+   * Renders the stored body as sanitized HTML block elements.
+   * @param {string} body HTML from the editor, or plain text.
+   * @returns {string} Safe HTML; use inside an element with class `rich-text`.
+   */
+  function render(body) {
+    var html = toHtml(body);
+    if (hasPurify) return window.DOMPurify.sanitize(html, { ALLOWED_TAGS: ALLOWED_TAGS, ALLOWED_ATTR: ALLOWED_ATTR });
+    return textBlocks(html, true).map(function (text) {
+      return '<p>' + escape(text).replace(/\n/g, '<br>') + '</p>';
+    }).join('');
+  }
+
+  /**
+   * First line of the text without any markup — for teasers and meta descriptions.
+   * @param {string} body
+   * @returns {string}
+   */
+  function firstLine(body) {
+    return (textBlocks(toHtml(body), false)[0] || '').split('\n')[0];
+  }
+
+  window.SkyRichText = {
+    render: render, firstLine: firstLine, escape: escape, toHtml: toHtml,
+    formats: FORMATS, firstLineClass: FIRST_LINE_CLASS
+  };
 })();

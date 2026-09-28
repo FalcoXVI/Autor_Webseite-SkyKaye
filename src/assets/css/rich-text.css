@@ -1,6 +1,8 @@
 /* Formatted text written by the author in the Decap editor (rendered by
    assets/js/rich-text.js). Font size and line height come from the container,
-   so the same markup fits the update cards and the Behind The Pages articles. */
+   so the same markup fits the update cards and the Behind The Pages articles.
+   The admin editor uses this file too, so it looks exactly like the website. */
+@import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 .rich-text { text-wrap: pretty; }
 .rich-text > * { margin: 0; }
@@ -8,6 +10,8 @@
 /* One empty line between blocks — exactly the gap the former plain-text
    rendering (white-space: pre-line) produced for a blank line. */
 .rich-text > * + * { margin-top: 1.7em; margin-top: 1lh; }
+/* An empty paragraph (Enter pressed twice) keeps its line, as in the editor. */
+.rich-text p:empty { min-height: 1.7em; min-height: 1lh; }
 
 .rich-text h3, .rich-text h4, .rich-text h5, .rich-text h6 {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
@@ -28,8 +32,11 @@
 }
 
 .rich-text ul, .rich-text ol { padding-left: 1.4em; }
-.rich-text li + li { margin-top: 0.35em; }
+.rich-text li + li, .rich-text li > :is(ul, ol) { margin-top: 0.35em; }
 .rich-text li::marker { color: var(--color-accent-700); }
+/* The editor wraps every list item's text in a paragraph. */
+.rich-text li > p { margin: 0; }
+.rich-text li > p + p { margin-top: 0.35em; }
 
 .rich-text blockquote {
   padding: 2px 0 2px 20px;
@@ -50,3 +57,35 @@
   background: var(--color-accent-700); transform: translate(-50%, -50%) rotate(45deg);
   box-shadow: 0 0 0 7px var(--color-bg);
 }
+
+/* ── Curated inline formats (class names come from SkyRichText.formats) ── */
+
+.rich-text s { text-decoration-thickness: 0.07em; }
+.rich-text u { text-underline-offset: 0.18em; }
+.rich-text u.u-double { text-decoration-style: double; }
+.rich-text u.u-wavy { text-decoration-style: wavy; text-decoration-skip-ink: none; text-underline-offset: 0.22em; }
+.rich-text u.u-dotted { text-decoration-style: dotted; text-decoration-thickness: 0.12em; }
+
+/* Relative sizes, so they scale with the card (17px), the article (19px) and mobile. */
+.rich-text .fs-small { font-size: 0.85em; }
+.rich-text .fs-large { font-size: 1.2em; }
+.rich-text .fs-xl { font-size: 1.45em; }
+
+/* Taken from the accent/neutral ramps in industry.css; all at least 5.7:1 on --color-bg. */
+.rich-text .c-blue { color: var(--color-accent-700); }
+.rich-text .c-navy { color: var(--color-accent-800); }
+.rich-text .c-grey { color: var(--color-neutral-700); }
+.rich-text .c-red { color: #9b3b3b; }
+
+/* Tinos is metric-compatible with Times New Roman; the fallbacks cover a blocked font CDN. */
+.rich-text .ff-serif { font-family: "Tinos", "Times New Roman", Times, Georgia, serif; }
+.rich-text .ff-condensed { font-family: var(--font-heading); }
+
+/* ── Block formats ── */
+
+.rich-text .indent-1 { margin-left: 2em; }
+.rich-text .indent-2 { margin-left: 4em; }
+.rich-text .indent-3 { margin-left: 6em; }
+.rich-text .first-line { text-indent: 1.5em; }
+.rich-text .align-center { text-align: center; }
+.rich-text .align-right { text-align: right; }

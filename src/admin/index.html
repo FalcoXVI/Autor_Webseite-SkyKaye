@@ -6,6 +6,8 @@
 <meta name="robots" content="noindex">
 <title>Sky Kaye — Content Manager</title>
 <link rel="stylesheet" href="../assets/css/industry.css">
+<link rel="stylesheet" href="../assets/css/rich-text.css">
+<link rel="stylesheet" href="rich-text-widget.css">
 <style>
   html, body { margin: 0; min-height: 100%; }
   #setup {
@@ -92,10 +94,8 @@ function dateField(things) {
   return { name: "date", label: "Datum & Uhrzeit", widget: "datetime", format: "YYYY-MM-DDTHH:mm:ssZ", picker_utc: false, hint: "Auch Vergangenheit oder Zukunft möglich — " + things + " reihen sich automatisch chronologisch ein. Eingabe in deiner lokalen Zeit (Wien); auf der Seite wird immer Wiener Zeit angezeigt, Sommer-/Winterzeit automatisch berücksichtigt." };
 }
 var BODY_FIELD = {
-  name: "body", label: "Text", widget: "markdown",
-  buttons: ["bold", "italic", "link", "heading-two", "heading-three", "quote", "bulleted-list", "numbered-list"],
-  editor_components: [],
-  hint: "Text markieren und oben in der Leiste formatieren. Enter = neuer Absatz, Shift+Enter = Zeilenumbruch."
+  name: "body", label: "Text", widget: "rich-text",
+  hint: "Text markieren und oben in der Leiste formatieren — wie in Word. Enter = neuer Absatz, Shift+Enter = Zeilenumbruch, Tab = einrücken."
 };
 
 var CMS_CONFIG = {
@@ -180,6 +180,8 @@ var CMS_CONFIG = {
 
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="https://unpkg.com/decap-cms@3.16.0/dist/decap-cms.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.16/dist/purify.min.js"></script>
+<script src="../assets/js/rich-text.js"></script>
 <script src="stable-id-widget.js"></script>
 <script>
 (function () {
@@ -202,7 +204,12 @@ var CMS_CONFIG = {
   var repo = CMS_CONFIG.backend.repo || '';
   var repoSet = repo && !/DEIN-GITHUB-USER|DEIN-REPO/i.test(repo);
 
-  function start() { window.CMS.init({ config: CMS_CONFIG }); }
+  // The text editor is an ES module (TipTap from esm.sh); it must be registered before init.
+  function start() {
+    import('./rich-text-widget.js')
+      .then(function () { window.CMS.init({ config: CMS_CONFIG }); })
+      .catch(function () { showSetup('The text editor could not be loaded — check the internet connection and reload this page.'); });
+  }
 
   if (isLocal) { start(); return; }
 

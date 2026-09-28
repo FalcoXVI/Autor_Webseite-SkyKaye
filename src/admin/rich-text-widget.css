@@ -1,0 +1,45 @@
+/* Toolbar and text area of the Decap "rich-text" widget (rich-text-widget.js).
+   The text itself is styled by assets/css/rich-text.css, exactly as on the website. */
+
+.sky-editor { padding: 0 !important; overflow: visible; }
+
+.sky-editor__toolbar {
+  position: sticky; top: 0; z-index: 2;
+  background: #f7f7f8; border-bottom: 1px solid #dfdfe3;
+  border-radius: 5px 5px 0 0;
+}
+
+/* The toolbar carries the rich-text class only so that the menu options show
+   their preset colour/font; its own layout must not get the text's block gaps. */
+.sky-toolbar { display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 8px 10px; font-family: system-ui, sans-serif; }
+.sky-toolbar.rich-text > * + * { margin-top: 0; }
+.sky-toolbar__group { display: flex; align-items: center; gap: 2px; }
+.sky-toolbar__group + .sky-toolbar__group { padding-left: 10px; border-left: 1px solid #dfdfe3; }
+
+.sky-toolbar__button {
+  display: inline-grid; place-items: center; min-width: 30px; height: 30px; padding: 0 6px;
+  border: 1px solid transparent; border-radius: 4px; background: none; color: #2b2b2d;
+  font: 600 15px/1 system-ui, sans-serif; cursor: pointer;
+}
+.sky-toolbar__button:hover { background: #e7e7ea; }
+.sky-toolbar__button:focus-visible { outline: 2px solid #597ea3; outline-offset: 1px; }
+.sky-toolbar__button.is-active { background: #d6ebff; border-color: #94bce3; color: #1d2d3d; }
+.sky-toolbar__button.is-bold { font-weight: 800; }
+.sky-toolbar__button.is-italic { font-style: italic; font-family: Georgia, serif; }
+.sky-toolbar__button.is-strike { text-decoration: line-through; }
+.sky-toolbar__button.is-h3 { font-size: 17px; }
+.sky-toolbar__button.is-h4 { font-size: 13px; }
+
+.sky-toolbar__select {
+  height: 30px; max-width: 170px; padding: 0 6px;
+  border: 1px solid #cfcfd4; border-radius: 4px; background: #fff; color: #2b2b2d;
+  font: 14px system-ui, sans-serif; cursor: pointer;
+}
+/* Options keep a readable size; only colour and font preview the preset. */
+.sky-toolbar .sky-toolbar__select option { font-size: 14px; }
+
+.sky-editor__content {
+  min-height: 260px; padding: 18px 20px 24px; outline: none;
+  font-family: var(--font-body); font-size: 17px; line-height: 1.7; color: var(--color-text);
+  background: var(--color-bg); border-radius: 0 0 5px 5px;
+}
