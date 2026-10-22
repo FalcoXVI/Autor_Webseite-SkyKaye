@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="assets/css/responsive.css">
 <link rel="stylesheet" href="assets/css/rich-text.css">
 <link rel="stylesheet" href="assets/css/behind-the-pages.css">
+<link rel="stylesheet" href="assets/css/contact.css">
 <style>
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--color-bg); color: var(--color-text); }
@@ -164,10 +165,13 @@ a:hover { color: var(--color-accent-800); }
       <p style="margin:0;font-size:15px;line-height:1.8;color:color-mix(in srgb, #f2f2f3 72%, transparent);max-width:58ch;text-wrap:pretty">But when the past refuses to stay buried, Zane is pulled into a fight that will force him to decide how much he's willing to lose for a world that has already taken almost everything.</p>
       <a class="btn btn-primary x10" href="the-last-druid.html" style="align-self:flex-start;padding:15px 28px;font-size:13px;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-accent-900);background:var(--color-accent-300);border-color:var(--color-accent-300)">Discover The Last Druid &rarr;</a>
     </div>
-    <div data-reveal class="blueprint" style="position:relative;padding:14px;border-color:color-mix(in srgb, #f2f2f3 28%, transparent)">
-      <i class="corner tl" style="color:color-mix(in srgb, #f2f2f3 55%, transparent)"></i><i class="corner tr" style="color:color-mix(in srgb, #f2f2f3 55%, transparent)"></i><i class="corner bl" style="color:color-mix(in srgb, #f2f2f3 55%, transparent)"></i><i class="corner br" style="color:color-mix(in srgb, #f2f2f3 55%, transparent)"></i>
-      <img src="assets/img/cover-the-last-druid.jpeg" alt="The Last Druid — cover" style="display:block;width:100%;aspect-ratio:2/3;object-fit:cover">
-    </div>
+    <figure data-reveal style="margin:0">
+      <div class="blueprint" style="position:relative;padding:14px;border-color:color-mix(in srgb, #f2f2f3 28%, transparent)">
+        <i class="corner tl" style="color:color-mix(in srgb, #f2f2f3 55%, transparent)"></i><i class="corner tr" style="color:color-mix(in srgb, #f2f2f3 55%, transparent)"></i><i class="corner bl" style="color:color-mix(in srgb, #f2f2f3 55%, transparent)"></i><i class="corner br" style="color:color-mix(in srgb, #f2f2f3 55%, transparent)"></i>
+        <img src="assets/img/cover-the-last-druid.jpeg" alt="The Last Druid — cover" style="display:block;width:100%;aspect-ratio:2/3;object-fit:cover">
+      </div>
+      <figcaption style="margin-top:16px;text-align:center;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:0.14em;color:color-mix(in srgb, #f2f2f3 50%, transparent)">cover mockup &middot; the real one is still to come</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -218,6 +222,43 @@ a:hover { color: var(--color-accent-800); }
       </article>
     </div>
     <a data-reveal class="btn btn-secondary" href="updates.html" style="margin-top:26px;padding:14px 24px;font-size:12px;letter-spacing:0.16em;text-transform:uppercase">See all updates &rarr;</a>
+  </div>
+</section>
+
+<section id="contact" style="padding:0 40px 130px;scroll-margin-top:70px">
+  <div style="width:min(1000px,100%);margin:0 auto">
+    <div data-reveal style="display:flex;align-items:baseline;gap:18px;padding-bottom:18px;border-bottom:1px solid var(--color-divider);margin-bottom:46px">
+      <h2 style="margin:0;font-size:clamp(34px,4.4vw,64px);line-height:0.95;text-transform:uppercase">Contact</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(200px,0.7fr) minmax(0,1.3fr);gap:60px;align-items:start">
+      <div data-reveal style="display:flex;flex-direction:column;gap:18px">
+        <p style="margin:0;font-size:18px;line-height:1.7;text-wrap:pretty">Questions about the books, thoughts on a story, or just want to say hi?</p>
+        <p style="margin:0;font-size:16px;line-height:1.75;color:color-mix(in srgb, var(--color-text) 74%, transparent);text-wrap:pretty">Drop me a message here and it lands straight in my inbox. I read every one of them.</p>
+      </div>
+      <form data-reveal data-contact-form class="contact-form blueprint" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <input type="hidden" name="form-name" value="contact">
+        <p class="contact-honeypot" aria-hidden="true"><label>Leave this field empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <div class="field">
+          <label for="contact-name">Name</label>
+          <input class="input" id="contact-name" name="name" type="text" autocomplete="name" maxlength="200" required aria-describedby="contact-name-error">
+          <p class="contact-error" id="contact-name-error" data-error-for="name" hidden></p>
+        </div>
+        <div class="field">
+          <label for="contact-email">Email</label>
+          <input class="input" id="contact-email" name="email" type="email" autocomplete="email" maxlength="320" required aria-describedby="contact-email-error">
+          <p class="contact-error" id="contact-email-error" data-error-for="email" hidden></p>
+        </div>
+        <div class="field">
+          <label for="contact-message">Message</label>
+          <textarea class="input" id="contact-message" name="message" rows="6" maxlength="5000" required aria-describedby="contact-message-error"></textarea>
+          <p class="contact-error" id="contact-message-error" data-error-for="message" hidden></p>
+        </div>
+        <p class="contact-privacy">Your details are only used to answer your message. More in the <a href="privacy-policy.html">privacy policy</a>.</p>
+        <button class="btn btn-primary contact-submit" type="submit">Send message &rarr;</button>
+        <p class="contact-status" data-contact-status role="status" aria-live="polite" hidden></p>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -274,6 +315,7 @@ a:hover { color: var(--color-accent-800); }
 <script src="assets/js/content-feed.js"></script>
 <script src="assets/js/rich-text.js"></script>
 <script src="assets/js/behind-the-pages.js"></script>
+<script src="assets/js/contact-form.js"></script>
 <script>
 /* Pulls fresh posts from updates/posts.json. If that fails, the pre-rendered
    content stays — the page is complete without this script. */
