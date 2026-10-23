@@ -1,11 +1,11 @@
 /**
  * Contact form on the homepage: validates the fields and sends the message to
- * Netlify Forms in the background, so the visitor stays on the page and sees
+ * Formspree in the background, so the visitor stays on the page and sees
  * a confirmation or an error right below the button.
  *
  * Without JavaScript the form still works: the browser checks the `required`
- * and `type="email"` attributes and posts it normally, and Netlify answers
- * with its own success page. No dependencies.
+ * and `type="email"` attributes and posts it to the form's `action`, and
+ * Formspree answers with its own thank-you page. No dependencies.
  */
 (function () {
   var form = document.querySelector('[data-contact-form]');
@@ -18,7 +18,8 @@
   var MESSAGES = {
     sending: 'Sending…',
     sent: 'Thank you! Your message is on its way, and I\'ll get back to you as soon as I can.',
-    failed: 'Sorry, your message could not be sent. Please try again in a moment.'
+    failed: 'Sorry, your message could not be sent. Please try again in a moment.',
+    throttled: 'Too many messages were sent in a short time. Please wait a minute and try again.'
   };
 
   var status = form.querySelector('[data-contact-status]');
@@ -79,21 +80,40 @@
       return;
     }
 
+    window.askTransferConsent().then(function (agreed) {
+      if (agreed) send(fields);
+      else submit.focus();
+    });
+  }
+
+  /**
+   * Posts the form to Formspree, together with a record of the visitor's
+   * consent to the transfer, and shows the outcome below the button.
+   * @param {Array<HTMLInputElement|HTMLTextAreaElement>} fields The validated fields.
+   */
+  function send(fields) {
+    var data = new FormData(form);
+    // Arrives in the submission email, so the consent stays on record.
+    data.append('us_transfer_consent', 'Agreed in the consent dialog on ' + new Date().toISOString());
+
     submit.disabled = true;
     showStatus('sending');
-    // Netlify Forms expects a urlencoded POST to any path of the site.
-    fetch('/', {
+    // With "Accept: application/json" Formspree answers with a status code
+    // instead of redirecting to its thank-you page. The honeypot `_gotcha`
+    // travels along; Formspree silently drops submissions that fill it in.
+    fetch(form.action, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(new FormData(form)).toString()
+      headers: { 'Accept': 'application/json' },
+      body: data
     })
       .then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
+        if (!res.ok) throw res;
         form.reset();
         fields.forEach(function (f) { f.removeAttribute('aria-invalid'); });
         showStatus('sent');
       })
-      .catch(function () { showStatus('failed'); })
+      // 429 is Formspree's rate limit, which the visitor should hear about.
+      .catch(function (err) { showStatus(err && err.status === 429 ? 'throttled' : 'failed'); })
       .then(function () { submit.disabled = false; });
   }
 })();
