@@ -1,0 +1,76 @@
+/* Contact form on the homepage. Builds on .field, .input and .btn from
+   industry.css; the error and status states are toggled by contact-form.js,
+   so they are classes here rather than inline styles. */
+
+.contact-form { display: flex; flex-direction: column; gap: 22px; padding: 34px 34px 30px; }
+
+.contact-form .field > label {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 8px;
+}
+.contact-form .input { font-size: 16px; padding: 10px 12px; }
+.contact-form textarea.input { min-height: 160px; }
+.contact-form .input[aria-invalid="true"] { border-color: #a14a4a; }
+
+/* Spam trap for bots (Formspree's _gotcha field): off-screen rather than display:none,
+   since some bots skip fields that are hidden outright. */
+.contact-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.contact-error { margin: 6px 0 0; font-size: 13px; color: #a14a4a; }
+
+.contact-privacy {
+  margin: 0; font-size: 13px; line-height: 1.6;
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+}
+.contact-privacy a { color: var(--color-accent-700); }
+
+.contact-submit {
+  align-self: flex-start; padding: 14px 26px; font-size: 13px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+}
+
+.contact-status {
+  margin: 0; padding: 14px 16px; font-size: 15px; line-height: 1.6;
+  border-left: 2px solid var(--color-divider);
+}
+.contact-status--sending { color: color-mix(in srgb, var(--color-text) 62%, transparent); }
+.contact-status--sent {
+  border-left-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+.contact-status--failed,
+.contact-status--throttled {
+  border-left-color: #a14a4a; color: #7d3434;
+  background: color-mix(in srgb, #a14a4a 8%, transparent);
+}
+
+/* Consent fallback for visitors without JavaScript; with JavaScript the
+   dialog below asks instead. */
+.contact-consent {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 13px; line-height: 1.6;
+}
+.contact-consent input { margin-top: 4px; flex: none; }
+
+/* Consent dialog shown after a valid submit (transfer-consent.js). */
+.consent-dialog {
+  width: min(560px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--color-divider);
+  background: var(--color-bg); color: var(--color-text);
+}
+.consent-dialog::backdrop { background: color-mix(in srgb, var(--color-accent-900) 55%, transparent); }
+.consent-dialog__body { display: flex; flex-direction: column; gap: 14px; padding: 30px 30px 26px; }
+.consent-dialog__body p { margin: 0; font-size: 15px; line-height: 1.65; text-wrap: pretty; }
+.consent-dialog__body a { color: var(--color-accent-700); }
+.consent-dialog__title {
+  margin: 0; font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 26px; line-height: 1; text-transform: uppercase;
+}
+.consent-dialog__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; margin-top: 8px; }
+.consent-dialog__actions .btn { padding: 12px 20px; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; }
+
+@media (max-width: 720px) {
+  .contact-form { padding: 26px 20px 22px; }
+  .contact-submit { align-self: stretch; }
+  .consent-dialog__body { padding: 24px 20px 20px; }
+  .consent-dialog__actions .btn { flex: 1 1 auto; }
+}
